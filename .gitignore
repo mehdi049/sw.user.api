@@ -1,0 +1,12 @@
+target
+output
+reports
+*.suo
+*.user
+nuget-packages
+_Resharper*
+bin/
+obj/
+*.DotSettings
+lib
+*.vs
