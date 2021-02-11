@@ -20,7 +20,7 @@ namespace sw.user.api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAccount(UserAccount userAccount)
+        public IActionResult CreateAccount(RegisterModel userAccount)
         {
             return Ok();
         }
