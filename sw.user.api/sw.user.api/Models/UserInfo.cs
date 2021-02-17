@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using sw.user.api.Models.Tables;
+﻿using System.ComponentModel.DataAnnotations;
+using sw.user.api.Models.DbContext.Tables;
 
 namespace sw.user.api.Models
 {
-    public class User
+    public class UserInfo
     {
-        public SwUser SwUser { get; set; }
-
+        public User User { get; set; }
         public int SeenCount { get; set; }
         public int LikesCount { get; set; }
         public int PendingExchangesCount { get; set; }
         public int ExchangesDoneCount { get; set; }
-
         public Preferences Preferences { get; set; }
     }
 }

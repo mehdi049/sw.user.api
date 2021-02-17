@@ -21,7 +21,7 @@ namespace sw.user.api.Controllers
         [Route("get-user")]
         public IActionResult GetUser(string email)
         {
-            return Ok(new User());
+            return Ok(new UserInfo());
         }
 
     }

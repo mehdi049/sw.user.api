@@ -1,26 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 
-#nullable disable
-
-namespace sw.user.api.Models.Tables
+namespace sw.user.api.Models.DbContext.Tables
 {
-    public partial class SwUser
+    public class User
     {
+        public User()
+        {
+            Identity = new ApplicationUser();
+        }
+
         public int Id { get; set; }
-        [Required]
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
-        [Required]
         public string Gender { get; set; }
-        [Required]
         public string Phone { get; set; }
-        [Required]
         public string City { get; set; }
-        [Required]
         public string Region { get; set; }
         public string Picture { get; set; }
+        
+        public ApplicationUser Identity { get; set; }
     }
+
+    public class ApplicationUser : IdentityUser
+    {
+
+    }
+
 }
