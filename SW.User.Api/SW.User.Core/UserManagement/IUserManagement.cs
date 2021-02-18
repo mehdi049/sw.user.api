@@ -10,5 +10,9 @@ namespace SW.User.Core.UserManagement
         bool AddUser(Data.Entities.User user);
 
         UserInfo GetUserById(int id);
+
+        UserInfo GetUserByEmail(string email);
+
+        List<UserInfo> GetAllUsers();
     }
 }

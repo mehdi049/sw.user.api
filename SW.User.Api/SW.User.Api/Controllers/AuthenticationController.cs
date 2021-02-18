@@ -122,7 +122,7 @@ namespace SW.User.Api.Controllers
         }
 
         [HttpPost]
-        [Route("register-admin")]
+        [Route("registerAdmin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Email);
