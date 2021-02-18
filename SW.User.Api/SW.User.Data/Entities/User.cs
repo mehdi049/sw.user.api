@@ -8,7 +8,6 @@ namespace SW.User.Data.Entities
         public User()
         {
             Preference = new Preference();
-            Identity = new ApplicationUser();
         }
 
         public int Id { get; set; }
@@ -36,14 +35,11 @@ namespace SW.User.Data.Entities
         [MaxLength(100)]
         public string Picture { get; set; }
 
+        public int PreferenceId { get; set; }
         public Preference Preference { get; set; }
 
-        public ApplicationUser Identity { get; set; }
-    }
-
-    public class ApplicationUser : IdentityUser
-    {
-
+        public string IdentityId { get; set; }
+        public IdentityUser Identity { get; set; }
     }
 
 }

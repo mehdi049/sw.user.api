@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using SW.User.Core.UserManagement;
 using SW.User.Data;
 
 namespace SW.User.Api
@@ -63,6 +64,7 @@ namespace SW.User.Api
                     };
                 });
 
+            services.AddScoped<IUserManagement, UserManagement>();
 
             services.AddControllers();
         }
