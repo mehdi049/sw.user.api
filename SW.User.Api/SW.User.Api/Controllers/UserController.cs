@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SW.User.Api.Models;
 using SW.User.Core.UserManagement;
 using SW.User.Data.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,13 +26,24 @@ namespace SW.User.Api.Controllers
             _userManagement = userManagement;
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("register/{isAdmin?}")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model, bool isAdmin = false)
+        {
+            if (await _userManagement.AddUserAsync(model, isAdmin))
+                return Ok();
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+        }
+
         [HttpGet]
         [Route("getUserById/{id}")]
         public IActionResult GetUser(int id)
         {
             UserInfo user = _userManagement.GetUserById(id);
             if (user == null)
-                return NotFound(new Response()
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
                     Status = "Error",
                     Message = "User not found"
@@ -44,7 +57,7 @@ namespace SW.User.Api.Controllers
         public IActionResult GetUser(string email)
         {
             if (string.IsNullOrEmpty(email))
-                return NotFound(new Response()
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
                     Status = "Error",
                     Message = "Email is required"
@@ -52,7 +65,7 @@ namespace SW.User.Api.Controllers
 
             UserInfo user = _userManagement.GetUserByEmail(email);
             if (user == null)
-                return NotFound(new Response()
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
                     Status = "Error",
                     Message = "User not found"
@@ -68,13 +81,28 @@ namespace SW.User.Api.Controllers
         {
             List<UserInfo> users = _userManagement.GetAllUsers();
             if (users == null)
-                return NotFound(new Response()
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
                     Status = "Error",
                     Message = "User not found"
                 });
 
             return Ok(users);
+        }
+
+        [HttpDelete]
+        [Route("deleteUser/{id}")]
+        public async Task<IActionResult> DeleteUserAsync(int id)
+        {
+            if (await _userManagement.DeleteUserAsync(id))
+                return Ok();
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response()
+            {
+                Status = "Error",
+                Message = "User deletion failed!"
+            });
+
         }
 
     }
