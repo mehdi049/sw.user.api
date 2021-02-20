@@ -12,7 +12,7 @@ namespace SW.User.Core.UserManagement
 
         Task<bool> DeleteUserAsync(int Id);
 
-        bool UpdateUser(Data.Entities.User user);
+        bool UpdateUser(UserInfo user);
 
         UserInfo GetUserById(int id);
 

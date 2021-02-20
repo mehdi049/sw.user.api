@@ -159,10 +159,12 @@ namespace SW.User.Core.UserManagement
             }
         }
 
-        public bool UpdateUser(Data.Entities.User user)
+        public bool UpdateUser(UserInfo user)
         {
             try
             {
+                _dbContext.User.Update(user.User);
+                _dbContext.SaveChanges();
                 return true;
             }
             catch

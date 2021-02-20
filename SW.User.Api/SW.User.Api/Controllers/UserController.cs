@@ -28,13 +28,25 @@ namespace SW.User.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("register/{isAdmin?}")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model, bool isAdmin = false)
+        [Route("register")]
+        public async Task<IActionResult> Register(RegisterModel model)
         {
-            if (await _userManagement.AddUserAsync(model, isAdmin))
+            if (await _userManagement.AddUserAsync(model, false))
                 return Ok();
 
-            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            return StatusCode(StatusCodes.Status400BadRequest, new Response { Message = "User creation failed! Please check user details and try again." });
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("registerAdmin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+        {
+            if (await _userManagement.AddUserAsync(model, true))
+                return Ok();
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Message = "User creation failed! Please check user details and try again." });
         }
 
         [HttpGet]
@@ -45,8 +57,7 @@ namespace SW.User.Api.Controllers
             if (user == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
-                    Status = "Error",
-                    Message = "User not found"
+                    Message = "User not found."
                 });
 
             return Ok(user);
@@ -59,16 +70,14 @@ namespace SW.User.Api.Controllers
             if (string.IsNullOrEmpty(email))
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
-                    Status = "Error",
-                    Message = "Email is required"
+                    Message = "Email is required."
                 });
 
             UserInfo user = _userManagement.GetUserByEmail(email);
             if (user == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
-                    Status = "Error",
-                    Message = "User not found"
+                    Message = "User not found."
                 });
 
             return Ok(user);
@@ -83,8 +92,7 @@ namespace SW.User.Api.Controllers
             if (users == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response()
                 {
-                    Status = "Error",
-                    Message = "User not found"
+                    Message = "User not found."
                 });
 
             return Ok(users);
@@ -99,10 +107,19 @@ namespace SW.User.Api.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError, new Response()
             {
-                Status = "Error",
                 Message = "User deletion failed!"
             });
 
+        }
+
+        [HttpPost]
+        [Route("updateUser")]
+        public IActionResult UpdateUser([FromBody] UserInfo model)
+        {
+            if (_userManagement.UpdateUser(model))
+                return Ok();
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Message = "User update failed! Please check user details and try again." });
         }
 
     }
