@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SW.User.Data.Common;
 using SW.User.Data.Models;
 
 namespace SW.User.Api.Controllers
@@ -54,13 +57,20 @@ namespace SW.User.Api.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
 
-                return Ok(new
+                return Ok(new Response
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
+                    Status = HttpStatusCode.OK,
+                    Body = new
+                    {
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiration = token.ValidTo
+                    }
                 });
             }
-            return Unauthorized();
+            return BadRequest(new Response
+            {
+                Message = "Email ou mot de passe incorrecte."
+            });
         }
     }
 }

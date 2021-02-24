@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using SW.User.Data.Common;
 using SW.User.Data.Models;
 
 namespace SW.User.Core.UserManagement
 {
     public interface IUserManagement
     {
-        Task<bool> AddUserAsync(RegisterModel register, bool isAdmin);
+        Task<Response> AddUserAsync(RegisterModel register, bool isAdmin);
 
-        Task<bool> DeleteUserAsync(int Id);
+        Task<Response> DeleteUserAsync(int id);
 
-        bool UpdateUser(UserInfo user);
+        Response UpdateUser(UserInfo user);
 
         UserInfo GetUserById(int id);
 

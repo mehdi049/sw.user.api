@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.Text;
 
-namespace SW.User.Api.Models
+namespace SW.User.Data.Common
 {
     public class Response
     {
-        public int Status { get; set; }
+        public HttpStatusCode Status { get; set; }
         public string Message { get; set; }
         public object Body { get; set; }
     }

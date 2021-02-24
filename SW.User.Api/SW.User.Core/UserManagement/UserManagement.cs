@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SW.User.Data;
+using SW.User.Data.Common;
 using SW.User.Data.Entities;
 using SW.User.Data.Models;
 
@@ -24,13 +26,17 @@ namespace SW.User.Core.UserManagement
             _roleManager = roleManager;
         }
 
-        public async Task<bool> AddUserAsync(RegisterModel register, bool isAdmin)
+        public async Task<Response> AddUserAsync(RegisterModel register, bool isAdmin)
         {
             try
             {
                 var userExists = await _userManager.FindByNameAsync(register.Email);
                 if (userExists != null)
-                    return false;
+                    return new Response()
+                    {
+                        Status = HttpStatusCode.BadRequest,
+                        Message = "Adresse e-mail déja existante, veuillez choisir une autre."
+                    };
 
                 IdentityUser identity = new IdentityUser()
                 {
@@ -41,7 +47,11 @@ namespace SW.User.Core.UserManagement
                 };
                 var result = await _userManager.CreateAsync(identity, register.Password);
                 if (!result.Succeeded)
-                    return false;
+                    return new Response()
+                    {
+                        Status = HttpStatusCode.BadRequest,
+                        Message = "Une erreur s'est produite, veuillez réessayer."
+                    };
 
                 if (!isAdmin)
                 {
@@ -76,11 +86,18 @@ namespace SW.User.Core.UserManagement
 
                 _dbContext.User.Add(user);
                 _dbContext.SaveChanges();
-                return true;
+                return new Response()
+                {
+                    Status = HttpStatusCode.OK
+                };
             }
             catch
             {
-                return false;
+                return new Response()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Message = "Une erreur s'est produite, veuillez réessayer."
+                };
             }
         }
 
@@ -138,38 +155,63 @@ namespace SW.User.Core.UserManagement
             return usersInfo;
         }
 
-        public async Task<bool> DeleteUserAsync(int id)
+        public async Task<Response> DeleteUserAsync(int id)
         {
             try
             {
                 Data.Entities.User user = _dbContext.User.Include(x => x.Identity).Include(y => y.Preference).Where(x => x.Id == id).FirstOrDefault();
+                if(user==null)
+                    return new Response()
+                    {
+                        Status = HttpStatusCode.BadRequest,
+                        Message = "Utilisateur n'existe plus."
+                    };
+
                 _dbContext.User.Remove(user);
                 _dbContext.Preference.Remove(user.Preference);
                 var identity = await _userManager.FindByIdAsync(user.IdentityId);
                 IdentityResult result = await _userManager.DeleteAsync(identity);
                 if (!result.Succeeded)
-                    return false;
+                    return new Response()
+                    {
+                        Status = HttpStatusCode.BadRequest,
+                        Message = "Une erreur s'est produite, veuillez réessayer."
+                    };
 
                 _dbContext.SaveChanges();
-                return true;
+                return new Response()
+                {
+                    Status = HttpStatusCode.OK,
+                };
             }
             catch
             {
-                return false;
+                return new Response()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Message = "Une erreur s'est produite, veuillez réessayer."
+                };
             }
         }
 
-        public bool UpdateUser(UserInfo user)
+        public Response UpdateUser(UserInfo user)
         {
             try
             {
                 _dbContext.User.Update(user.User);
                 _dbContext.SaveChanges();
-                return true;
+                return new Response()
+                {
+                    Status = HttpStatusCode.OK,
+                };
             }
             catch
             {
-                return false;
+                return new Response()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Message = "Une erreur s'est produite, veuillez réessayer."
+                };
             }
         }
     }
