@@ -30,7 +30,7 @@ namespace SW.User.Core.UserManagement
         {
             try
             {
-                var userExists = await _userManager.FindByNameAsync(register.Email);
+                var userExists = await _userManager.FindByNameAsync(register.Email.ToLower());
                 if (userExists != null)
                     return new Response()
                     {
@@ -40,9 +40,9 @@ namespace SW.User.Core.UserManagement
 
                 IdentityUser identity = new IdentityUser()
                 {
-                    Email = register.Email,
+                    Email = register.Email.ToLower(),
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = register.Email,
+                    UserName = register.Email.ToLower(),
                     PhoneNumber = register.Phone
                 };
                 var result = await _userManager.CreateAsync(identity, register.Password);
@@ -160,7 +160,7 @@ namespace SW.User.Core.UserManagement
             try
             {
                 Data.Entities.User user = _dbContext.User.Include(x => x.Identity).Include(y => y.Preference).Where(x => x.Id == id).FirstOrDefault();
-                if(user==null)
+                if (user == null)
                     return new Response()
                     {
                         Status = HttpStatusCode.BadRequest,
@@ -194,18 +194,47 @@ namespace SW.User.Core.UserManagement
             }
         }
 
-        public Response UpdateUser(UserInfo user)
+        public async Task<Response> UpdateUserAsync(UserInfo user)
         {
             try
             {
-                _dbContext.User.Update(user.User);
+                var u = _dbContext.User.Include(x => x.Identity).Include(x => x.Preference)
+                    .Where(x => x.Id == user.User.Id).FirstOrDefault();
+
+                if (user.User.Identity.Email.ToLower() != u.Identity.Email.ToLower())
+                {
+                    var userExists = await _userManager.FindByNameAsync(user.User.Identity.Email);
+                    if (userExists != null)
+                        return new Response()
+                        {
+                            Status = HttpStatusCode.BadRequest,
+                            Message = "Adresse e-mail déja existante, veuillez choisir une autre."
+                        };
+                }
+
+                u.FirstName = user.User.FirstName;
+                u.LastName = user.User.LastName;
+                u.Gender = user.User.Gender;
+                u.City = user.User.City;
+                u.Region = user.User.Region;
+
+                u.Identity.Email = user.User.Identity.Email;
+                u.Identity.UserName = user.User.Identity.Email;
+                u.Identity.NormalizedUserName = user.User.Identity.Email.ToUpper();
+                u.Identity.NormalizedEmail = user.User.Identity.Email.ToUpper();
+                u.Identity.PhoneNumber = user.User.Identity.PhoneNumber;
+
+                u.Preference = user.User.Preference;
+
+                _dbContext.User.Update(u);
                 _dbContext.SaveChanges();
+
                 return new Response()
                 {
                     Status = HttpStatusCode.OK,
                 };
             }
-            catch
+            catch (Exception e)
             {
                 return new Response()
                 {

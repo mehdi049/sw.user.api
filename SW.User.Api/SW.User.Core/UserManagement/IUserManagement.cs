@@ -12,7 +12,7 @@ namespace SW.User.Core.UserManagement
 
         Task<Response> DeleteUserAsync(int id);
 
-        Response UpdateUser(UserInfo user);
+        Task<Response> UpdateUserAsync(UserInfo user);
 
         UserInfo GetUserById(int id);
 

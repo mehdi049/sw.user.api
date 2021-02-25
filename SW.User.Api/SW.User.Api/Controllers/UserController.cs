@@ -43,7 +43,7 @@ namespace SW.User.Api.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("registerAdmin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterAdmin(RegisterModel model)
         {
             Response response = await _userManagement.AddUserAsync(model, true);
             if (response.Status == HttpStatusCode.OK)
@@ -117,11 +117,11 @@ namespace SW.User.Api.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("updateUser")]
-        public IActionResult UpdateUser([FromBody] UserInfo model)
+        public async Task<IActionResult> UpdateUserAsync(UserInfo model)
         {
-            Response response = _userManagement.UpdateUser(model);
+            Response response = await _userManagement.UpdateUserAsync(model);
             if (response.Status == HttpStatusCode.OK)
                 return Ok(new Response { Status = HttpStatusCode.OK });
 
