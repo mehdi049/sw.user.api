@@ -108,7 +108,19 @@ namespace SW.User.Core.UserManagement
             if (user != null)
                 return new UserInfo()
                 {
-                    User = user,
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Gender = user.Gender,
+                    City = user.City,
+                    Region = user.Region,
+                    Picture = user.Picture,
+
+                    Email = user.Identity.Email,
+                    PhoneNumber = user.Identity.PhoneNumber,
+
+                    Preference = user.Preference,
+
                     ExchangesDoneCount = 10,
                     LikesCount = 25,
                     PendingExchangesCount = 8,
@@ -125,7 +137,19 @@ namespace SW.User.Core.UserManagement
             if (user != null)
                 return new UserInfo()
                 {
-                    User = user,
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Gender = user.Gender,
+                    City = user.City,
+                    Region = user.Region,
+                    Picture = user.Picture,
+
+                    Email = user.Identity.Email,
+                    PhoneNumber = user.Identity.PhoneNumber,
+
+                    Preference = user.Preference,
+
                     ExchangesDoneCount = 10,
                     LikesCount = 25,
                     PendingExchangesCount = 8,
@@ -145,7 +169,19 @@ namespace SW.User.Core.UserManagement
             foreach (var user in users)
                 usersInfo.Add(new UserInfo()
                 {
-                    User = user,
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Gender = user.Gender,
+                    City = user.City,
+                    Region = user.Region,
+                    Picture = user.Picture,
+
+                    Email = user.Identity.Email,
+                    PhoneNumber = user.Identity.PhoneNumber,
+
+                    Preference = user.Preference,
+
                     ExchangesDoneCount = 10,
                     LikesCount = 25,
                     PendingExchangesCount = 8,
@@ -199,11 +235,11 @@ namespace SW.User.Core.UserManagement
             try
             {
                 var u = _dbContext.User.Include(x => x.Identity).Include(x => x.Preference)
-                    .Where(x => x.Id == user.User.Id).FirstOrDefault();
+                    .Where(x => x.Id == user.Id).FirstOrDefault();
 
-                if (user.User.Identity.Email.ToLower() != u.Identity.Email.ToLower())
+                if (user.Email.ToLower() != u.Identity.Email.ToLower())
                 {
-                    var userExists = await _userManager.FindByNameAsync(user.User.Identity.Email);
+                    var userExists = await _userManager.FindByNameAsync(user.Email);
                     if (userExists != null)
                         return new Response()
                         {
@@ -212,19 +248,19 @@ namespace SW.User.Core.UserManagement
                         };
                 }
 
-                u.FirstName = user.User.FirstName;
-                u.LastName = user.User.LastName;
-                u.Gender = user.User.Gender;
-                u.City = user.User.City;
-                u.Region = user.User.Region;
+                u.FirstName = user.FirstName;
+                u.LastName = user.LastName;
+                u.Gender = user.Gender;
+                u.City = user.City;
+                u.Region = user.Region;
 
-                u.Identity.Email = user.User.Identity.Email;
-                u.Identity.UserName = user.User.Identity.Email;
-                u.Identity.NormalizedUserName = user.User.Identity.Email.ToUpper();
-                u.Identity.NormalizedEmail = user.User.Identity.Email.ToUpper();
-                u.Identity.PhoneNumber = user.User.Identity.PhoneNumber;
+                u.Identity.Email = user.Email;
+                u.Identity.UserName = user.Email;
+                u.Identity.NormalizedUserName = user.Email.ToUpper();
+                u.Identity.NormalizedEmail = user.Email.ToUpper();
+                u.Identity.PhoneNumber = user.PhoneNumber;
 
-                u.Preference = user.User.Preference;
+                u.Preference = user.Preference;
 
                 _dbContext.User.Update(u);
                 _dbContext.SaveChanges();
