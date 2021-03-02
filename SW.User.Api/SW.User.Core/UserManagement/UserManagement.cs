@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SW.User.Data;
@@ -270,7 +272,7 @@ namespace SW.User.Core.UserManagement
                     Status = HttpStatusCode.OK,
                 };
             }
-            catch (Exception e)
+            catch
             {
                 return new Response()
                 {
@@ -278,6 +280,64 @@ namespace SW.User.Core.UserManagement
                     Message = "Une erreur s'est produite, veuillez réessayer."
                 };
             }
+        }
+
+        public Response UpdateUserImage(IFormFile image, int userId, string path)
+        {
+            try
+            {
+                if (image.Length > 0)
+                {
+                    var supportedTypes = new[] { "jpg", "jpeg", "png" };
+
+                    string fileExt = System.IO.Path.GetExtension(image.FileName.ToLower()).Substring(1);
+                    if (!supportedTypes.Contains(fileExt))
+                        return new Response()
+                        {
+                            Status = HttpStatusCode.BadRequest,
+                            Message = "Extension de l'image est invalide, veuillez utiliser .png, .jpg, .jpeg."
+                        };
+
+                    // < 5 mb
+                    if (image.Length > 5242880)
+                        return new Response()
+                        {
+                            Status = HttpStatusCode.BadRequest,
+                            Message = "L'image téléchargée est très grande, veuillez télécharger une image < 5 Mo."
+                        };
+
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+                    string fileName = Guid.NewGuid() + "_" + image.FileName;
+                    using (FileStream fileStream = System.IO.File.Create(path + fileName))
+                    {
+                        image.CopyTo(fileStream);
+                        fileStream.Flush();
+                    }
+
+                    var user = _dbContext.User.Find(userId);
+                    user.Picture = fileName;
+                    _dbContext.User.Update(user);
+                    _dbContext.SaveChanges();
+
+                    return new Response {Status = HttpStatusCode.OK, Body = fileName};
+                }
+
+                return new Response()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Message = "Une erreur s'est produite, veuillez réessayer."
+                };
+            }
+            catch
+            {
+                return new Response()
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Message = "Une erreur s'est produite, veuillez réessayer."
+                };
+            }
+
         }
     }
 }

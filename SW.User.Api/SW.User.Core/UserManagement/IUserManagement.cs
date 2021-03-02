@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using SW.User.Data.Common;
 using SW.User.Data.Models;
 
@@ -13,6 +14,8 @@ namespace SW.User.Core.UserManagement
         Task<Response> DeleteUserAsync(int id);
 
         Task<Response> UpdateUserAsync(UserInfo user);
+
+        Response UpdateUserImage(IFormFile image, int userId, string path);
 
         UserInfo GetUserById(int id);
 

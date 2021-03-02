@@ -26,5 +26,9 @@
     <ProjectReference Include="..\SW.User.Data\SW.User.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Upload\Profiles\" />
+  </ItemGroup>
+
 
 </Project>

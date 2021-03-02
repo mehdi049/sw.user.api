@@ -16,6 +16,8 @@ namespace SW.User.Data.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
 
+        public string Role { get; set; }
+
         public Preference Preference { get; set; }
 
         public int SeenCount { get; set; }

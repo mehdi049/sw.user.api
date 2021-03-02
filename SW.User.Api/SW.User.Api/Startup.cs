@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -94,6 +95,7 @@ namespace SW.User.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else app.UseHsts();
 
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
@@ -101,6 +103,8 @@ namespace SW.User.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {
