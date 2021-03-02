@@ -316,6 +316,8 @@ namespace SW.User.Core.UserManagement
                     }
 
                     var user = _dbContext.User.Find(userId);
+                    File.Delete(path+user.Picture);
+
                     user.Picture = fileName;
                     _dbContext.User.Update(user);
                     _dbContext.SaveChanges();
