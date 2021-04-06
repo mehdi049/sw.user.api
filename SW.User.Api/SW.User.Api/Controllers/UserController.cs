@@ -100,13 +100,6 @@ namespace SW.User.Api.Controllers
         public IActionResult GetAllUsers()
         {
             List<UserInfo> users = _userManagement.GetAllUsers();
-            if (users == null)
-                return BadRequest(new Response()
-                {
-                    Status = HttpStatusCode.BadRequest,
-                    Message = "User not found."
-                });
-
             return Ok(new Response { Status = HttpStatusCode.OK, Body = users });
         }
 
@@ -137,7 +130,7 @@ namespace SW.User.Api.Controllers
         [Route("updateUserImage/{userId}")]
         public IActionResult UpdateUserImage([FromForm] IFormFile model, int userId)
         {
-            string uploadPath = _environment.WebRootPath + "\\SW\\Upload\\Profiles\\";
+            string uploadPath = _environment.WebRootPath + "\\SW\\upload\\profiles\\";
 
             Response response = _userManagement.UpdateUserImage(model,userId,uploadPath);
             if (response.Status == HttpStatusCode.OK)
