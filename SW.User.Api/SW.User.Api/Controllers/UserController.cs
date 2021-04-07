@@ -57,6 +57,7 @@ namespace SW.User.Api.Controllers
             return BadRequest(new Response { Status = HttpStatusCode.BadRequest, Message = response.Message });
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("getUserById/{id}")]
         public IActionResult GetUser(int id)
@@ -94,7 +95,7 @@ namespace SW.User.Api.Controllers
             return Ok(new Response { Status = HttpStatusCode.OK, Body = user });
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         [Route("getAllUsers")]
         public IActionResult GetAllUsers()
