@@ -124,9 +124,6 @@ namespace SW.User.Core.UserManagement
                     Preference = user.Preference,
 
                     ExchangesDoneCount = 10,
-                    LikesCount = 25,
-                    PendingExchangesCount = 8,
-                    SeenCount = 112
                 };
 
             return null;
@@ -153,9 +150,6 @@ namespace SW.User.Core.UserManagement
                     Preference = user.Preference,
 
                     ExchangesDoneCount = 10,
-                    LikesCount = 25,
-                    PendingExchangesCount = 8,
-                    SeenCount = 112
                 };
 
             return null;
@@ -184,10 +178,7 @@ namespace SW.User.Core.UserManagement
 
                     Preference = user.Preference,
 
-                    ExchangesDoneCount = 10,
-                    LikesCount = 25,
-                    PendingExchangesCount = 8,
-                    SeenCount = 112
+                    ExchangesDoneCount = 10
                 });
 
             return usersInfo;

@@ -20,9 +20,6 @@ namespace SW.User.Data.Models
 
         public Preference Preference { get; set; }
 
-        public int SeenCount { get; set; }
-        public int LikesCount { get; set; }
-        public int PendingExchangesCount { get; set; }
         public int ExchangesDoneCount { get; set; }
     }
 }
