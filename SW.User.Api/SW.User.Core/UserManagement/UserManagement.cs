@@ -281,7 +281,7 @@ namespace SW.User.Core.UserManagement
                 {
                     var supportedTypes = new[] { "jpg", "jpeg", "png" };
 
-                    string fileExt = System.IO.Path.GetExtension(image.FileName.ToLower()).Substring(1);
+                    string fileExt = Path.GetExtension(image.FileName.ToLower()).Substring(1);
                     if (!supportedTypes.Contains(fileExt))
                         return new Response()
                         {
@@ -299,8 +299,8 @@ namespace SW.User.Core.UserManagement
 
                     if (!Directory.Exists(path))
                         Directory.CreateDirectory(path);
-                    string fileName = Guid.NewGuid() + "_" + image.FileName;
-                    using (FileStream fileStream = System.IO.File.Create(path + fileName))
+                    string fileName = Guid.NewGuid() + "_" + image.FileName.Replace(" ", "").Replace("(", "").Replace(")", "");
+                    using (FileStream fileStream = File.Create(path + fileName))
                     {
                         image.CopyTo(fileStream);
                         fileStream.Flush();
