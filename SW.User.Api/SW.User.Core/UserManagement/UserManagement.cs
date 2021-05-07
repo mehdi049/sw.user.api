@@ -227,8 +227,15 @@ namespace SW.User.Core.UserManagement
         {
             try
             {
-                var u = _dbContext.User.Include(x => x.Identity).Include(x => x.Preference)
+                Data.Entities.User u = _dbContext.User.Include(x => x.Identity).Include(x => x.Preference)
                     .Where(x => x.Id == user.Id).FirstOrDefault();
+
+                if(u==null)
+                return new Response
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Message = "Une erreur s'est produite, utilisateur non trouvé."
+                };
 
                 if (user.Email.ToLower() != u.Identity.Email.ToLower())
                 {
